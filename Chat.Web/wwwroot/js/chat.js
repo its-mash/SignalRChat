@@ -1,5 +1,5 @@
 ﻿var api = "https://localhost:7086"
-var token ="eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0ZXN0QG1haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkFzaWtWaGFpIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiI1IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTY1NjIzNjY4NH0.-RT49DwhEBlwHs--A_sAdgvpV2IUdyaR3wZMrj_mN15M47ojkK0nQHeu0iUY5YSMlPPV6ggCm8kH1R9QEItxWQ"
+var token ="eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0ZXN0QG1haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3QiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNjU2NDMzODQ3fQ.O9cBxNrAx8MP4_Sn7iouGipMPNCEytzobN-VQYKXgFcXzCxfBNiU2DHg83YAt0tPRVVPTWg65eM4K_Cm7DXYWQ"
 $(document).ready(function () {
     var connection = new signalR.HubConnectionBuilder().withUrl(api+"/chatHub",
         {
@@ -99,19 +99,19 @@ $(document).ready(function () {
             }
         });
 
-        //self.sendNewMessage = function () {
-        //    var text = self.message();
-        //    if (text.startsWith("/")) {
-        //        var receiver = text.substring(text.indexOf("(") + 1, text.indexOf(")"));
-        //        var message = text.substring(text.indexOf(")") + 1, text.length);
-        //        self.sendPrivate(receiver, message);
-        //    }
-        //    else {
-        //        self.sendToRoom(self.joinedRoomId(), self.message());
-        //    }
+        self.sendNewMessage = function () {
+            //var text = self.message();
+            //if (text.startsWith("/")) {
+            //    var receiver = text.substring(text.indexOf("(") + 1, text.indexOf(")"));
+            //    var message = text.substring(text.indexOf(")") + 1, text.length);
+            //    self.sendPrivate(receiver, message);
+            //}
+            //else {
+            self.sendToRoom(self.joinedRoomId(), self.message());
+            //}
 
-        //    self.message("");
-        //}
+            self.message("");
+        }
 
         self.sendToRoom = function (roomId, message) {
             if (message.length > 0) {
@@ -123,11 +123,11 @@ $(document).ready(function () {
             }
         }
 
-        //self.sendPrivate = function (receiver, message) {
-        //    if (receiver.length > 0 && message.length > 0) {
-        //        connection.invoke("SendPrivate", receiver.trim(), message.trim());
-        //    }
-        //}
+        self.sendPrivate = function (receiver, message) {
+            if (receiver.length > 0 && message.length > 0) {
+                connection.invoke("SendPrivate", receiver.trim(), message.trim());
+            }
+        }
 
         self.joinRoom = function (room) {
             connection.invoke("Join", room.name()).then(function () {
@@ -137,22 +137,22 @@ $(document).ready(function () {
                 self.messageHistory();
             });
         }
-        //self.roomList = function () {
-        //    fetch(api + '/api/Tournament/TournamentList',
-        //            {
-        //                headers: { "Authorization": " Bearer " + token }
-        //            })
-        //        .then(response => response.json())
-        //        .then(data => {
-        //            self.chatRooms.removeAll();
-        //            for (var i = 0; i < data.length; i++) {
-        //                self.chatRooms.push(new ChatRoom(data[i].id, data[i].tournamentName));
-        //            }
+        self.roomList = function () {
+            fetch(api + '/api/Tournament/TournamentList',
+                    {
+                        headers: { "Authorization": " Bearer " + token }
+                    })
+                .then(response => response.json())
+                .then(data => {
+                    self.chatRooms.removeAll();
+                    for (var i = 0; i < data.length; i++) {
+                        self.chatRooms.push(new ChatRoom(data[i].id, data[i].tournamentName));
+                    }
 
-        //            if (self.chatRooms().length > 0)
-        //                self.joinRoom(self.chatRooms()[0]);
-        //        });
-        //}
+                    if (self.chatRooms().length > 0)
+                        self.joinRoom(self.chatRooms()[0]);
+                });
+        }
 
         self.userList = function () {
             connection.invoke("GetUsers", self.joinedRoom()).then(function (result) {
@@ -167,32 +167,32 @@ $(document).ready(function () {
             });
         }
 
-        //self.createRoom = function () {
-        //    var roomName = $("#roomName").val();
-        //    fetch(api+'/api/Rooms', {
-        //        method: 'POST',
-        //        headers: { 'Content-Type': 'application/json' },
-        //        body: JSON.stringify({ name: roomName })
-        //    });
-        //}
+        self.createRoom = function () {
+            var roomName = $("#roomName").val();
+            fetch(api+'/api/Rooms', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: roomName })
+            });
+        }
 
-        //self.editRoom = function () {
-        //    var roomId = self.joinedRoomId();
-        //    var roomName = $("#newRoomName").val();
-        //    fetch(api+'/api/Rooms/' + roomId, {
-        //        method: 'PUT',
-        //        headers: { 'Content-Type': 'application/json' },
-        //        body: JSON.stringify({ id: roomId, name: roomName })
-        //    });
-        //}
+        self.editRoom = function () {
+            var roomId = self.joinedRoomId();
+            var roomName = $("#newRoomName").val();
+            fetch(api+'/api/Rooms/' + roomId, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: roomId, name: roomName })
+            });
+        }
 
-        //self.deleteRoom = function () {
-        //    fetch(api+'/api/Rooms/' + self.joinedRoomId(), {
-        //        method: 'DELETE',
-        //        headers: { 'Content-Type': 'application/json' },
-        //        body: JSON.stringify({ id: self.joinedRoomId() })
-        //    });
-        //}
+        self.deleteRoom = function () {
+            fetch(api+'/api/Rooms/' + self.joinedRoomId(), {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: self.joinedRoomId() })
+            });
+        }
 
         self.messageHistory = function () {
             fetch(api +'/api​/Messages​/GetTournamentMessages​/' + viewModel.joinedRoomId(),
@@ -215,30 +215,30 @@ $(document).ready(function () {
                 });
         }
 
-        //self.roomAdded = function (room) {
-        //    self.chatRooms.push(room);
-        //}
+        self.roomAdded = function (room) {
+            self.chatRooms.push(room);
+        }
 
-        //self.roomUpdated = function (updatedRoom) {
-        //    var room = ko.utils.arrayFirst(self.chatRooms(), function (item) {
-        //        return updatedRoom.id() == item.id();
-        //    });
+        self.roomUpdated = function (updatedRoom) {
+            var room = ko.utils.arrayFirst(self.chatRooms(), function (item) {
+                return updatedRoom.id() == item.id();
+            });
 
-        //    room.name(updatedRoom.name());
+            room.name(updatedRoom.name());
 
-        //    if (self.joinedRoomId() == room.id()) {
-        //        self.joinRoom(room);
-        //    }
-        //}
+            if (self.joinedRoomId() == room.id()) {
+                self.joinRoom(room);
+            }
+        }
 
-        //self.roomDeleted = function (id) {
-        //    var temp;
-        //    ko.utils.arrayForEach(self.chatRooms(), function (room) {
-        //        if (room.id() == id)
-        //            temp = room;
-        //    });
-        //    self.chatRooms.remove(temp);
-        //}
+        self.roomDeleted = function (id) {
+            var temp;
+            ko.utils.arrayForEach(self.chatRooms(), function (room) {
+                if (room.id() == id)
+                    temp = room;
+            });
+            self.chatRooms.remove(temp);
+        }
 
         self.userAdded = function (user) {
             self.chatUsers.push(user);
